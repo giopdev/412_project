@@ -1,0 +1,23 @@
+[
+  {
+    "fullName": "User One",
+    "username": "user1",
+    "email": "user1@example.com",
+    "userPassword": "123456789",
+    "imagePath": "./images/default2.png"
+  },
+  {
+    "fullName": "User Two",
+    "username": "user2",
+    "email": "user2@example.com",
+    "userPassword": "123456789",
+    "imagePath": "./images/default.png"
+  },
+  {
+    "fullName": "User Three",
+    "username": "user3",
+    "email": "user3@example.com",
+    "userPassword": "123456789",
+    "imagePath": "./images/default2.png"
+  }
+]
