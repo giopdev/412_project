@@ -12,8 +12,6 @@ const pgConnection = new Client({
 // inserts all users from users.json
 async function insertUsers(){
   try{
-    await pgConnection.connect()
-
     const users = JSON.parse(fs.readFileSync('./users.json', 'utf8'))
 
     const insertUserQuery = `
@@ -32,16 +30,12 @@ async function insertUsers(){
     console.log('inserted ' + usersInserted + ' users')
   } catch(e){
     console.error(e)
-  } finally{
-    await pgConnection.end()
   }
 }
 
 // inserts a singular user with given data
 async function insertUser(fullName, username, email, userPassword, imagePath){
   try{
-    await pgConnection.connect()
-
     const insertUserQuery = `
       INSERT INTO "USER" (fullName, username, email, userPassword, profilePhoto)
       VALUES ($1, $2, $3, $4, $5);
@@ -53,10 +47,16 @@ async function insertUser(fullName, username, email, userPassword, imagePath){
     console.log('inserted 1 user')
   } catch(e){
     console.error(e)
-  } finally{
-    await pgConnection.end()
   }
 }
 
-insertUsers()
-insertUser("User Four", "user4", "user4@example.com", "123456789", "./images/default.png")
+async function main() {
+await pgConnection.connect()
+
+await insertUsers()
+await insertUser("User Four", "user4", "user4@example.com", "123456789", "./images/default.png")
+
+await pgConnection.end()
+}
+
+main()
