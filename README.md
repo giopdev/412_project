@@ -9,6 +9,7 @@ npm install pg
 touch sql_credentials
 # write credentials to file
 node create_users.js
+node create_food.js
 ```
 
 <h3>Your credentials should be stored in a file as such</h3>
