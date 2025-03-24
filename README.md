@@ -14,7 +14,7 @@ node create_food.js
 
 <h3>Your credentials should be stored in a file as such</h3>
 
-<b>Sql_credentials.json</b>
+<b>sql_credentials.json</b>
 ```JSON
 {
     "user": "username",
