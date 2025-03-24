@@ -4,13 +4,16 @@ const { Client } = require('pg');
 // read synthetic data from food.json
 const foodData = JSON.parse(fs.readFileSync('./food.json', 'utf8'));
 
+// read postgresql creds from file
+const sql_credentials = JSON.parse(fs.readFileSync('./sql_credentials.json', 'utf8'))
+
 const pgConnection = new Client({
-  user: '',
-  host: 'localhost',
-  database: '',
-  password: '',
-  port: 5432,
-});
+  user: sql_credentials.user,
+  host: sql_credentials.host,
+  database: sql_credentials.database,
+  password: sql_credentials.password,
+  port: sql_credentials.port,
+})
 
 // insert goals
 async function insertGoals() {

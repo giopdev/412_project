@@ -1,12 +1,15 @@
 const fs = require('fs');
 const { Client } = require('pg');
+const crypto = require('crypto');
+
+const sql_credentials = JSON.parse(fs.readFileSync('./sql_credentials.json', 'utf8'))
 
 const pgConnection = new Client({
-  user: '',
-  host: 'localhost',
-  database: '',
-  password: '',
-  port: 5432,
+  user: sql_credentials.user,
+  host: sql_credentials.host,
+  database: sql_credentials.database,
+  password: sql_credentials.password,
+  port: sql_credentials.port,
 })
 
 // inserts all users from users.json
@@ -23,7 +26,8 @@ async function insertUsers(){
 
     for(const user of users){
       const imageBytes = fs.readFileSync(user.imagePath)
-      await pgConnection.query(insertUserQuery,[user.fullName, user.username, user.email, user.userPassword, imageBytes])
+      const hashedPassword = saltAndHash(user.userPassword, user.username)
+      await pgConnection.query(insertUserQuery,[user.fullName, user.username, user.email, hashedPassword, imageBytes])
       usersInserted ++
     }
 
@@ -40,14 +44,23 @@ async function insertUser(fullName, username, email, userPassword, imagePath){
       INSERT INTO "USER" (fullName, username, email, userPassword, profilePhoto)
       VALUES ($1, $2, $3, $4, $5);
     `
+      const hashedPassword = saltAndHash(userPassword, username)
 
       const imageBytes = fs.readFileSync(imagePath)
-      await pgConnection.query(insertUserQuery,[fullName, username, email, userPassword, imageBytes])
+      await pgConnection.query(insertUserQuery,[fullName, username, email, hashedPassword, imageBytes])
 
     console.log('inserted 1 user')
   } catch(e){
     console.error(e)
   }
+}
+
+// Returns the sha256 hash of a string (toHash + salt)
+function saltAndHash(toHash, salt){
+  const hashable = toHash + salt
+  const hash = crypto.createHash('sha256')
+  hash.update(hashable)
+  return hash.digest('hex')
 }
 
 async function main() {
