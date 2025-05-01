@@ -20,6 +20,7 @@
   "homepage": "https://github.com/giopdev/412_project#readme",
   "dependencies": {
     "express": "^5.1.0",
+    "express-session": "^1.18.1",
     "pg": "^8.15.6"
   }
 }

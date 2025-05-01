@@ -63,6 +63,12 @@
 		top: 1vh;
 		left: 1vh;
 	}
+
+	.error_label_styling {
+		font-size: 2vh;
+		font-weight: bold;
+		color: #d6696a;
+	}
 </style>
 
 <body>
@@ -70,16 +76,19 @@
 	<!-- Prompt user for login -->
 	<h1>Login</h1>
 	<input type="text" id="login_username" placeholder="username">
-	<input type="text" id="login_password" placeholder="password">
+	<input type="password" id="login_password" placeholder="password">
 
 	<div class="home_button_area">
 		<button type="button" onclick="window.location.href='/'" class="home_button_styling">⏎</button>
 	</div>
 
 	<div class="button-list">
-		<button type="button" onclick="">Let Me In!</button>
-
+		<button id="login_button" type="button" onclick="">Let Me In!</button>
 	</div>
+	<p id="error_label" class="error_label_styling"></p>
+
+	<!-- load the login POST request on click script -->
+	<script src="login.js"></script>
 </body>
 
 </html>
