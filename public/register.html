@@ -71,16 +71,47 @@
 	<input type="text" id="register_fullname" placeholder="name">
 	<input type="text" id="register_email" placeholder="email">
 	<input type="text" id="register_username" placeholder="username">
-	<input type="text" id="register_password" placeholder="password">
+	<input type="password" id="register_password" placeholder="password">
 
 	<div class="home_button_area">
 		<button type="button" onclick="window.location.href='/'" class="home_button_styling">⏎</button>
 	</div>
 
-	<div class="button-list">
-		<button type="button" onclick="">Create It!</button>
-
+	<div class="button_list">
+		<button type="button" id="doRegister">Create It!</button>
 	</div>
+	
+	<script>
+		document.getElementById('doRegister').addEventListener('click', async () => {
+		const fullName = document.getElementById('register_fullname').value.trim();
+		const email = document.getElementById('register_email').value.trim();
+		const username = document.getElementById('register_username').value.trim();
+		const password = document.getElementById('register_password').value;
+		
+		if(!fullName || !email || !username || !password) {
+			return alert('ALL FIELDS REQUIRED!');
+		}
+		
+		try {
+			const res = await fetch('/register', {
+				method: 'POST',
+				headers: {'Content-Type': 'application/json'},
+				body: JSON.stringify({register_fullname: fullName, register_email: email, register_username: username, register_password: password}),
+			});
+			
+			if(res.ok){
+				alert('Registered! Going back to homepage');
+				window.location = '/';
+			} else {
+				const {error} = await res.json();
+				alert (error || 'Registration failed');
+			}
+		} catch (err) {
+			console.error(err);
+			alert('Network error');
+		}
+	});
+	</script>
 </body>
 
 </html>
