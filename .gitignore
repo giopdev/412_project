@@ -136,6 +136,3 @@ dist
 .pnp.*
 
 sql_credentials.json
-
-package.json
-package-lock.json

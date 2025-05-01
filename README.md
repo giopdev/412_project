@@ -5,7 +5,7 @@ cool project, really cool
 <b>usage:</b>
 ```Bash
 npm init -y
-npm install pg
+npm install
 touch sql_credentials
 # write credentials to file
 node create_users.js
