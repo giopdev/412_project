@@ -5,7 +5,7 @@ cool project, really cool
 <b>usage:</b>
 ```Bash
 npm install
-touch sql_credentials
+touch sql_credentials.json
 # <write credentials to file> ...
 
 # import some data
