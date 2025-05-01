@@ -23,6 +23,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(express.json());
 
+app.use(express.urlencoded({extended: true}));
+
 // Session Object params
 app.use(session({
   secret: 'session-key-very-secret',
@@ -87,6 +89,48 @@ app.post('/login', async (req, res) => {
     }
   } catch (e) {
     console.log(e);
+  }
+});
+
+/*
+* register endpoint, takes in name, user, email, and password
+*/
+app.post('/register', async (req, res) => {
+  const { register_fullname, register_email, register_username, register_password } = req.body;
+
+  // basic validation
+  if (!register_fullname || !register_email || !register_username || !register_password) {
+    return res.status(400).send('All fields are required.');
+  }
+
+  // hash the password
+  const hashedPassword = saltAndHash(register_password, register_username);
+
+  // pick a default photo path (defualt.png for now)
+  const defaultPhoto = '/images/default.png';
+
+  // insert into USER table
+  const insertSQL = `
+    INSERT INTO "USER" 
+      (fullName, username, email, userPassword, profilePhoto)
+    VALUES
+      ($1,$2,$3,$4,$5)
+    RETURNING userid;
+  `;
+  const values = [register_fullname, register_username, register_email, hashedPassword, defaultPhoto];
+
+  try {
+    const result = await pgConnection.query(insertSQL, values);
+    console.log('New user id=', result.rows[0].userid);
+    // either redirect to login or send success
+    return res.redirect('/login');
+  } catch (err) {
+    console.error('Registration error:', err);
+    // unique violation on username/email?
+    if (err.code === '23505') {
+      return res.status(409).send('That username or email is already taken.');
+    }
+    return res.status(500).send('Internal server error.');
   }
 });
 
