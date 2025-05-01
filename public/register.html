@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>F🍩🍩D! - Register</title>
+</head>
+<style>
+	body {
+		min-height: 50vh;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		margin: auto;
+		max-width: 100vh;
+		gap: 2vh;
+		background-color: #f3ffff;
+	}
+
+	h1 {
+		font-weight: bold;
+		font-size: 5vh;
+		margin-bottom: 1vh;
+		color: #677772;
+	}
+
+	.button_list {
+		display: flex;
+		flex-direction: row;
+		gap: 24px;
+	}
+
+	button {
+		padding: 10px 40px;
+		font-size: 24px;
+		cursor: pointer;
+		font-weight: bold;
+		border-radius: 2vh;
+		color: #6b6b6b;
+	}
+
+	.home_button_styling {
+		padding: 10px 15px;
+		font-size: 2vh;
+		cursor: pointer;
+		font-weight: bold;
+		border-radius: 2vh;
+		color: #6b6b6b;
+	}
+
+	input {
+		font-weight: bold;
+		padding: 10px 20px;
+		font-size: 24px;
+		color: #94aba3;
+		border-radius: 1vh;
+	}
+
+	.home_button_area {
+		position: absolute;
+		top: 1vh;
+		left: 1vh;
+	}
+</style>
+
+<body>
+
+	<!-- Prompt user for registration -->
+	<h1>Register</h1>
+	<input type="text" id="register_fullname" placeholder="name">
+	<input type="text" id="register_email" placeholder="email">
+	<input type="text" id="register_username" placeholder="username">
+	<input type="text" id="register_password" placeholder="password">
+
+	<div class="home_button_area">
+		<button type="button" onclick="window.location.href='/'" class="home_button_styling">⏎</button>
+	</div>
+
+	<div class="button-list">
+		<button type="button" onclick="">Create It!</button>
+
+	</div>
+</body>
+
+</html>
