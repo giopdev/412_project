@@ -136,3 +136,6 @@ dist
 .pnp.*
 
 sql_credentials.json
+
+# macos file
+.DS_Store

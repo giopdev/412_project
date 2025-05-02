@@ -137,6 +137,38 @@ app.get('/api/favorite', async (req, res) => {
     }
 });
 
+// GET the profile picture
+app.get('/api/profile-photo-bytes', async (req, res) => {
+  const userid = req.session.userid;
+  if (!req.session.userid) return res.status(401).json({ error: "Not logged in" });
+  
+  try {
+    const result = await pgConnection.query(
+      'SELECT profilePhoto FROM "USER" WHERE userid = $1',
+      [userid]
+    );
+    
+    // convert byte array to png
+    res.set('Content-Type', 'image/png');
+    res.send(result.rows[0].profilephoto);
+  } catch (err) {
+    console.error('Photo fetch error:', err);
+    res.status(500).end();
+  }
+});
+
+// Clear session cookie --> logout
+app.post('/api/logout', (req, res) => {
+  req.session.destroy(err => {
+    if (err) {
+      console.error('Session destruction error:', err);
+      return res.status(500).json({ error: 'Logout failed.' });
+    }
+    //res.clearCookie('connect.sid'); // Name may vary if you set a custom session name
+    res.json({ success: true });
+  });
+});
+
 // DELETE a favorite (unfavorite)
 app.delete('/api/favorite', async (req, res) => {
     const userid = req.session.userid;
@@ -321,6 +353,38 @@ async function main() {
   console.log('Running on localhost:3000')
 
 }
+
+// GET the profile picture
+app.get('/api/profile-photo-bytes', async (req, res) => {
+  const userid = req.session.userid;
+  if (!req.session.userid) return res.status(401).json({ error: "Not logged in" });
+  
+  try {
+    const result = await pgConnection.query(
+      'SELECT profilePhoto FROM "USER" WHERE userid = $1',
+      [userid]
+    );
+    
+    // convert byte array to png
+    res.set('Content-Type', 'image/png');
+    res.send(result.rows[0].profilephoto);
+  } catch (err) {
+    console.error('Photo fetch error:', err);
+    res.status(500).end();
+  }
+});
+
+// Clear session cookie --> logout
+app.post('/api/logout', (req, res) => {
+  req.session.destroy(err => {
+    if (err) {
+      console.error('Session destruction error:', err);
+      return res.status(500).json({ error: 'Logout failed.' });
+    }
+    //res.clearCookie('connect.sid'); // Name may vary if you set a custom session name
+    res.json({ success: true });
+  });
+});
 
 main()
 

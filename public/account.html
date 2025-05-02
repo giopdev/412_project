@@ -6,6 +6,10 @@
     <title>🍩 Account</title>
     <style>
         body {
+            background-color: #f3ffff;
+        }
+
+        main {
             min-height: 75vh;
             display: flex;
             flex-direction: column;
@@ -14,8 +18,34 @@
             margin: auto;
             max-width: 100vh;
             gap: 3vh;
-            background-color: #f3ffff;
         }
+
+        #profile-picture {
+            position: absolute;
+            top: 1vh;
+            left: 1vh;
+
+            aspect-ratio: 1;
+            border: 3px solid gray;
+            border-radius: 10px;
+            width: 6vh;
+        }
+
+        .profile_styling {
+			padding: 10px 15px;
+			font-size: 2vh;
+			font-weight: bold;
+			border-radius: 2vh;
+			color: #6b6b6b;
+
+            
+		}
+
+		.profile_area {
+			position: absolute;
+			top: 1vh;
+			left: 1vh;
+		}
 
         h1 {
             font-weight: bold;
@@ -54,9 +84,13 @@
             display: flex;
             flex-direction: row;
             gap: 24px;
+            justify-content: center;
+
+            width: 55%;
         }
 
         button {
+            flex: 1;
             padding: 10px 40px;
             font-size: 24px;
             cursor: pointer;
@@ -64,25 +98,46 @@
             border-radius: 2vh;
             color: #6b6b6b;
             background: #e2ffff;
-            border: none;
+            /*border: none;*/
+            border: 2px solid rgb(0, 140, 165);
+        }
+
+        #logout_button {
+            margin-top: 5vh;
+            max-width: 50%;
+            background-color: #c2dddd;
         }
     </style>
 </head>
 
 <body>
-    <!-- Show logged in view -->
-    <div class="title_container">
-        <h1>Welcome back!</h1>
-    </div>
+    <img id="profile-picture" src="images/default.png" alt="">
+    
+    <main>
+        <!-- Show logged in view -->
+        <div class="title_container">
+            <h1>Welcome back!</h1>
+        </div>
 
-    <div class="button_row">
-        <button type="button" onclick="window.location.href='/logmeals'">
-            Log Meals
-        </button>
-        <button type="button" onclick="window.location.href='/meals'">
-            View My Meals
-        </button>
-    </div>
+        <div class="button_row">
+            <button type="button" onclick="window.location.href='/logmeals'">
+                Log Meals
+            </button>
+            <button type="button" onclick="window.location.href='/meals'">
+                View My Meals
+            </button>
+        </div>
+        <div class="button_row">
+            <button id="logout_button" type="button">
+                Log Out
+            </button>
+        </div>
+    </main>
+
+    <!-- load the profile photo with script -->
+    <script src="account.js"></script>
+    
+    
 </body>
 
 </html>
