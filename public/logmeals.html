@@ -216,6 +216,14 @@
 
     <script src="logmeals.js"></script>
     <script>
+        // Check Authorization
+        async function isLoggedIn() {
+            const response = await fetch('api/fullname');
+            if (response.status === 403) {
+            window.location.href = '/error.html';
+            }
+        }
+
         async function loadRecipes() {
             const [mealsRes, favsRes] = await Promise.all([
                 fetch('/api/recipes'),
@@ -266,6 +274,8 @@
         }
 
         window.onload = () => {
+            isLoggedIn();
+
             const logBtn = document.getElementById('log_meal_button');
             const favBtn = document.getElementById('favorite_meal_button');
             const idIn = document.getElementById('id_entry');

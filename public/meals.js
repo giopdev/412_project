@@ -1,3 +1,11 @@
+// Check Authorization
+async function isLoggedIn() {
+    const response = await fetch('api/fullname');
+    if (response.status === 403) {
+      window.location.href = '/error.html';
+    }
+  }
+
 async function loadMeals() {
     // fetch the logged‐meals
     const resp = await fetch('/api/meallog');
@@ -76,4 +84,7 @@ async function loadMeals() {
 }
 
 // make sure to call it on load
-window.onload = loadMeals;
+window.onload = () => {
+    isLoggedIn();
+    loadMeals();
+};
