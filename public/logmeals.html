@@ -11,17 +11,13 @@
             cursor: pointer;
             font-weight: bold;
             border-radius: 2vh;
-            border: solid;
             color: #6b6b6b;
-            background-color: #ffffff;
         }
 
         .home_button_area {
             position: absolute;
             top: 1vh;
             left: 1vh;
-            color: #ffffff;
-            background-color: #ffffff;
         }
 
         body {
@@ -59,6 +55,15 @@
         }
 
         button {
+            padding: 10px 40px;
+            font-size: 24px;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 2vh;
+            color: #6b6b6b;
+        }
+
+        .interaction_buttons {
             padding: 10px 40px;
             font-size: 36px;
             cursor: pointer;
@@ -179,8 +184,8 @@
     </div>
 
     <div class="meal_row">
-        <button id="log_meal_button">L🍩G IT!</button>
-        <button id="favorite_meal_button">★ Favorite</button>
+        <button id="log_meal_button" class="interaction_buttons">L🍩G IT!</button>
+        <button id="favorite_meal_button" class="interaction_buttons">★ Favorite</button>
     </div>
 
     <!-- keep error label here to not mess with formatting -->
