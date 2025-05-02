@@ -316,7 +316,7 @@ app.post('/register', async (req, res) => {
   const hashedPassword = saltAndHash(register_password, register_username);
 
   // pick a default photo path (defualt.png for now)
-  const defaultPhoto = '/images/default.png';
+  const defaultPhoto = fs.readFileSync('./images/default.png')
 
   // insert into USER table
   const insertSQL = `

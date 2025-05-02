@@ -15,9 +15,9 @@ async function loadWelcome() {
 // pull pfp image *(does not work yet)
 fetch('/api/profile-photo-bytes')
     .then(response => {
-        response.blob();
         console.log("Response: ");
         console.log(response);
+        return response.blob();
     })
     .then(blob => {
         if (!blob || blob.size === 0) {
@@ -26,7 +26,7 @@ fetch('/api/profile-photo-bytes')
         const url = URL.createObjectURL(blob);
         console.log("URL found:");
         console.log(url);
-        document.getElementById('profile-photo').src = url;
+        document.getElementById('profile-picture').src = url;
     })
     .catch((error) => {
         console.log(error);
