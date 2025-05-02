@@ -1,4 +1,4 @@
-CREATE TABLE  "USER" (
+CREATE TABLE IF NOT EXISTS "USER" (
     userId SERIAL PRIMARY KEY,
     fullName VARCHAR(50) NOT NULL,
     username VARCHAR(25) UNIQUE NOT NULL, -- unique to be used for salting passwords
@@ -7,7 +7,7 @@ CREATE TABLE  "USER" (
     profilePhoto BYTEA -- used to store the raw bytes of a .png file
 );
 
-CREATE TABLE GOAL (
+CREATE TABLE IF NOT EXISTS GOAL (
     goalId SERIAL PRIMARY KEY,
     userId INTEGER REFERENCES "USER"(userId),
     goalName VARCHAR(50) NOT NULL,
@@ -18,7 +18,7 @@ CREATE TABLE GOAL (
     fat INTEGER
 );
 
-CREATE TABLE RECIPE (
+CREATE TABLE IF NOT EXISTS RECIPE (
     recipeId SERIAL PRIMARY KEY,
     recipeName VARCHAR(50) NOT NULL,
     totalCalories INTEGER NOT NULL CHECK (totalCalories >= 0),
@@ -28,14 +28,14 @@ CREATE TABLE RECIPE (
     servingSize INTEGER NOT NULL CHECK (servingSize > 0) -- a serving size must be greater than 0
 );
 
-CREATE TABLE FAVORITES (
+CREATE TABLE IF NOT EXISTS FAVORITES (
     userId INTEGER,
     recipeId INTEGER,
     PRIMARY KEY(userId, recipeId), -- any given user may favorite a recipe once
     dateSaved DATE NOT NULL
 );
 
-CREATE TABLE INGREDIENT (
+CREATE TABLE IF NOT EXISTS INGREDIENT (
     ingredientId SERIAL PRIMARY KEY,
     ingredientName VARCHAR(50) NOT NULL,
     calories INTEGER NOT NULL CHECK (calories >= 0),
@@ -44,14 +44,14 @@ CREATE TABLE INGREDIENT (
     fat INTEGER NOT NULL CHECK (fat >= 0)
 );
 
-CREATE TABLE RECIPE_INGREDIENT (
+CREATE TABLE IF NOT EXISTS RECIPE_INGREDIENT (
     recipeId INTEGER,
     ingredientId INTEGER,
     PRIMARY KEY (recipeId, ingredientId), -- intended to connect recipes with ingredients
     amount REAL NOT NULL CHECK (amount >= 0) -- Real to allow more fine control over ingredient amouns, and thus calories
 );
 
-CREATE TABLE MEALLOG (
+CREATE TABLE IF NOT EXISTS MEALLOG (
     recipeId INTEGER REFERENCES RECIPE(recipeId),
     userId INTEGER REFERENCES "USER"(userId),
     loggedTime TIME,

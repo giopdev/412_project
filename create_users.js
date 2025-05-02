@@ -1,6 +1,7 @@
 const fs = require('fs');
 const { Client } = require('pg');
 const crypto = require('crypto');
+const { createTables } = require('./create_tables');
 
 const sql_credentials = JSON.parse(fs.readFileSync('./sql_credentials.json', 'utf8'))
 
@@ -64,12 +65,14 @@ function saltAndHash(toHash, salt){
 }
 
 async function main() {
-await pgConnection.connect()
+  await pgConnection.connect()
 
-await insertUsers()
-await insertUser("User Four", "user4", "user4@example.com", "123456789", "./images/default.png")
+  await createTables(pgConnection);
 
-await pgConnection.end()
+  await insertUsers()
+  await insertUser("User Four", "user4", "user4@example.com", "123456789", "./images/default.png")
+
+  await pgConnection.end()
 }
 
 main()

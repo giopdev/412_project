@@ -1,5 +1,6 @@
 const fs = require('fs');
 const { Client } = require('pg');
+const { createTables } = require('./create_tables');
 
 // read synthetic data from food.json
 const foodData = JSON.parse(fs.readFileSync('./food.json', 'utf8'));
@@ -127,6 +128,7 @@ async function main() {
     await pgConnection.connect();
     console.log("Connected to PostgreSQL");
 
+    await createTables(pgConnection);
     await insertGoals();
     await insertRecipes();
     await insertIngredients();
