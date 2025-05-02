@@ -269,7 +269,7 @@
             const idIn = document.getElementById('id_entry');
             const err = document.getElementById('error_label');
 
-            // Log-it
+            // Log button
             logBtn.onclick = async () => {
                 const recipeid = idIn.value.trim();
                 const resp = await fetch('/api/logmeal', {

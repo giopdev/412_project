@@ -9,15 +9,12 @@ async function loadRecipes() {
     const mealsContainer = document.getElementById('meals_container');
 
     /*
-     * For each meal in the response, create a meal row and append to the container
+     * For each meal in the response create meal row and append
      */
     for (const meal of meals) {
         console.log(meal)
         const mealRow = document.createElement('div');
         mealRow.className = 'meal_row';
-        /*
-         * Create paragraphs for each element of a recipe and add it to the row
-         */
         const pkCell = document.createElement('p');
         pkCell.className = 'recipe_id';
         pkCell.textContent = `🏷️ ${meal.recipeid}`;
@@ -54,10 +51,10 @@ async function loadRecipes() {
 
 /*
  * Script for add meal button to hit /api/logmeal endpoint and log a new meal for a given user
- * and ★ Favorite button to hit /api/favorite
+ * and Favorite button to hit /api/favorite
  */
 window.onload = () => {
-    // Log-it button
+    // Log button
     document.getElementById('log_meal_button').onclick = async function () {
         const recipe_id_entered = id_entry.value;
 
@@ -75,7 +72,7 @@ window.onload = () => {
         }
     };
 
-    // Favorite button (new)
+    // Favorite button
     document.getElementById('favorite_meal_button').onclick = async function () {
         const recipe_id_entered = id_entry.value;
 
