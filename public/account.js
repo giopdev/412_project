@@ -1,5 +1,18 @@
+// Welcome message
+async function loadWelcome() {
+    const response = await fetch('api/fullname');
+    console.log(response);
+    if (!response.ok) {
+        console.error('Failed to fetch full name');
+        return;
+    }
 
+    // i dont know
+    const name = response.statusText;
+    document.getElementById('welcomeMsg').innerHTML = "Welcome, " + name + "!";
+}
 
+// pull pfp image *(does not work yet)
 fetch('/api/profile-photo-bytes')
     .then(response => {
         response.blob();
@@ -21,19 +34,21 @@ fetch('/api/profile-photo-bytes')
     }
 );
 
+// logout button event handler
 document.getElementById('logout_button').onclick = async function() {
     try {
       const response = await fetch('/api/logout', { method: 'POST' });
       if (response.ok) {
         window.location.href = '/landingPage.html';
       } else {
-        console.log("5");
-        console.log(response);
         alert('Logout failed. Please try again.');
       }
     } catch (err) {
-        console.log("6");
-        console.log(err);
       alert('Logout failed. Please try again.');
     }
   };
+
+
+  window.onload = () => {
+    loadWelcome();
+  }

@@ -95,6 +95,27 @@ app.get('/api/meallog', async (req, res) => {
     }
 });
 
+// GET full name
+app.get('/api/fullname', async (req, res) => {
+  // Return error if no userid in session
+  if (!req.session.userid) {
+    return res.status(403).json({ error: 'GET fullname without userid' });
+  }
+
+  try {
+    /*
+    * Send back session user's full name
+    */
+    const query = `
+    SELECT fullname FROM "USER" WHERE userId=$1`;
+
+    const queryResult = await pgConnection.query(query, [req.session.userid]);
+    return res.json(queryResult.rows[0].fullName);
+  } catch (e) {
+    console.log(e);
+  }
+})
+
 // GET request for all recipes in db
 app.get('/api/recipes', async (req, res) => {
   // Return error if no userid in session
@@ -135,26 +156,6 @@ app.get('/api/favorite', async (req, res) => {
         console.error('Fetch favorites error:', err);
         res.status(500).json({ error: 'Internal server error.' });
     }
-});
-
-// GET the profile picture
-app.get('/api/profile-photo-bytes', async (req, res) => {
-  const userid = req.session.userid;
-  if (!req.session.userid) return res.status(401).json({ error: "Not logged in" });
-  
-  try {
-    const result = await pgConnection.query(
-      'SELECT profilePhoto FROM "USER" WHERE userid = $1',
-      [userid]
-    );
-    
-    // convert byte array to png
-    res.set('Content-Type', 'image/png');
-    res.send(result.rows[0].profilephoto);
-  } catch (err) {
-    console.error('Photo fetch error:', err);
-    res.status(500).end();
-  }
 });
 
 // Clear session cookie --> logout
@@ -374,14 +375,13 @@ app.get('/api/profile-photo-bytes', async (req, res) => {
   }
 });
 
-// Clear session cookie --> logout
+// Clear session --> logout
 app.post('/api/logout', (req, res) => {
   req.session.destroy(err => {
     if (err) {
-      console.error('Session destruction error:', err);
+      console.error('Logout error:', err);
       return res.status(500).json({ error: 'Logout failed.' });
     }
-    //res.clearCookie('connect.sid'); // Name may vary if you set a custom session name
     res.json({ success: true });
   });
 });
