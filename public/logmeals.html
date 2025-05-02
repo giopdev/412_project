@@ -176,7 +176,6 @@
         <input type="text" id="id_entry" placeholder="🏷️ ID">
     </div>
 
-    <!-- Log & Favorite buttons -->
     <div class="meal_row">
         <button id="log_meal_button">L🍩G IT!</button>
         <button id="favorite_meal_button">★ Favorite</button>
@@ -225,7 +224,7 @@
                 return;
             }
             const meals = await mealsRes.json();
-            const favIds = await favsRes.json(); // array of recipeid ints
+            const favIds = await favsRes.json();
 
             // containers
             const favSection = document.getElementById('favorites_container');
@@ -270,7 +269,7 @@
             const idIn = document.getElementById('id_entry');
             const err = document.getElementById('error_label');
 
-            // Log-it stays the same
+            // Log-it
             logBtn.onclick = async () => {
                 const recipeid = idIn.value.trim();
                 const resp = await fetch('/api/logmeal', {
