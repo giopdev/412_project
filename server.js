@@ -85,7 +85,7 @@ app.get('/api/meallog', async (req, res) => {
     FROM meallog ml JOIN recipe r
     ON r.recipeid = ml.recipeid
     WHERE ml.userId = $1
-    ORDER BY ml.loggedtime DESC`;
+    ORDER BY datesaved DESC, ml.loggedtime DESC`;
 
     const result = await pgConnection.query(query, [req.session.userid]);
     return res.json(result.rows);

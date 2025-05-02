@@ -1,3 +1,11 @@
+// Check Authorization
+async function isLoggedIn() {
+    const response = await fetch('api/fullname');
+    if (response.status === 403) {
+      window.location.href = '/error.html';
+    }
+  }
+
 async function loadMeals() {
     // fetch the logged‐meals
     const resp = await fetch('/api/meallog');
@@ -28,7 +36,7 @@ async function loadMeals() {
             dateH2.textContent = dateOnly;
             container.appendChild(dateH2);
 
-            // column‐label row
+            // column-label row
             const headerRow = document.createElement('div');
             headerRow.className = 'meal_row';
             [
@@ -76,4 +84,7 @@ async function loadMeals() {
 }
 
 // make sure to call it on load
-window.onload = loadMeals;
+window.onload = () => {
+    isLoggedIn();
+    loadMeals();
+};

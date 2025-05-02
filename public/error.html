@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>🍩 403 Error</title>
+</head>
+<style>
+	body {
+		min-height: 50vh;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		margin: auto;
+		max-width: 100vh;
+		gap: 2vh;
+		background-color: #f3ffff;
+	}
+
+    p {
+        text-align: center;
+        color:#d6696a;
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+	h1 {
+		font-weight: bold;
+		font-size: 5vh;
+		margin-bottom: 1vh;
+		color: #677772;
+	}
+
+
+	.button_list {
+		display: flex;
+		flex-direction: row;
+		gap: 24px;
+	}
+
+	button {
+		padding: 10px 40px;
+		font-size: 24px;
+		cursor: pointer;
+		font-weight: bold;
+		border-radius: 2vh;
+		color: #6b6b6b;
+	}
+
+	.error_label_styling {
+		font-size: 2vh;
+		font-weight: bold;
+		color: #d6696a;
+	}
+</style>
+
+<body>
+
+	<!-- Prompt user for login -->
+	<h1>Error: Unauthorized access</h1>
+	<p>Please return to the home screen and log in.</p>
+
+	<div class="button-list">
+		<button id="login_button" type="button" onclick="window.location.href='/'">Return Home</button>
+	</div>
+	<p id="error_label" class="error_label_styling"></p>
+
+</body>
+
+</html>
