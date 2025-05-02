@@ -21,5 +21,5 @@ window.onload = () => {
       document.getElementById('error_label').textContent = responseBody.error;
 
     }
-  };
+  }
 }

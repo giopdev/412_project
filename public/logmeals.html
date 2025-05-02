@@ -71,13 +71,15 @@
 			gap: 2px;
 		}
 
+
+
 		button {
 			padding: 10px 40px;
-			font-size: 24px;
+			font-size: 36px;
 			cursor: pointer;
 			font-weight: bold;
 			border-radius: 2vh;
-			color: #6b6b6b;
+			color: #ffac33;
 		}
 
 		.add_meal_button {
@@ -101,6 +103,13 @@
 			color: #ffac33;
 		}
 
+		.recipe_id {
+			width: 6vh;
+			background-color: #e2ffff;
+			border-color: #a67c52;
+			color: #a67c52;
+		}
+
 		.recipe_name {
 			width: 22vh;
 			background-color: #e2ffff;
@@ -114,7 +123,6 @@
 			border-color: #8bc34a;
 			color: #8bc34a;
 		}
-
 
 		.calories {
 			width: 14vh;
@@ -144,6 +152,7 @@
 			color: #ffe066;
 		}
 
+		.recipe_id,
 		.recipe_name,
 		.calories,
 		.protein,
@@ -171,6 +180,16 @@
 			gap: 1vh;
 		}
 
+		input {
+			width: 10vh;
+			text-align: center;
+			font-weight: bold;
+			padding: 10px 20px;
+			font-size: 24px;
+			color: #94aba3;
+			border-radius: 1vh;
+		}
+
 		.header_border {
 			border: 1px solid;
 			border-color: #8a4b38;
@@ -182,15 +201,23 @@
 <body>
 	<!-- Banner -->
 	<div class="title_container">
-		<h1>YOUR F🍩🍩D!</h1>
+		<h1>ATE SOMETHING?</h1>
 	</div>
 
 	<div class="home_button_area">
-		<button type="button" onclick="window.location.href='/account'" class="home_button_styling">⏎</button>
+		<button type="button" onclick="window.location.href='/meals'" class="home_button_styling">⏎</button>
 	</div>
+
+
+	<div class="meal_row">
+		<input type="text" id="id_entry" placeholder="🏷️ ID">
+	</div>
+
+	<button id="log_meal_button">L🍩G IT!</button>
 
 	<div id="meals_container" class="meals_container">
 		<div class="meal_row">
+			<p class="recipe_id">🏷️ ID</p>
 			<p class="recipe_name">🍽️ Recipe Name</p>
 			<p class="calories">🔥 Calories</p>
 			<p class="protein">🥩 Protein</p>
@@ -200,8 +227,8 @@
 		<hr class="header_border">
 		</hr>
 	</div>
-	<button id="add_meal_button" onclick="window.location.href='/logmeals'" class="add_meal_button">+</button>
 
-	<script src="meals.js"></script>
+
+	<script src="logmeals.js"></script>
 
 </html>

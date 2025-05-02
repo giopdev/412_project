@@ -64,6 +64,11 @@ app.get('/meals', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'meals.html'));
 });
 
+// Meals Logger Page Path
+app.get('/logmeals', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'logmeals.html'));
+});
+
 // GET request for current session user's meallog in db
 app.get('/api/meallog', async (req, res) => {
   // Return error if no userid in session
@@ -88,6 +93,62 @@ app.get('/api/meallog', async (req, res) => {
     console.log(e);
   }
 });
+
+// GET request for all recipes in db
+app.get('/api/recipes', async (req, res) => {
+  // Return error if no userid in session
+  if (!req.session.userid) {
+    return res.status(403).json({ error: 'GET recipes without userid' });
+  }
+
+  try {
+    /*
+    * Send back session user's meal log
+    */
+    const query = `
+    SELECT * FROM recipe`;
+
+    const queryResult = await pgConnection.query(query);
+    return res.json(queryResult.rows);
+  } catch (e) {
+    console.log(e);
+  }
+});
+
+/*
+ * logmeal endpoint, takes in a recipeid and logs it in the session user's meallog
+ */
+app.post('/api/logmeal', async (req, res) => {
+  const { recipeid } = req.body;
+  // Return error if no userid in session
+  if (!req.session.userid) {
+    return res.status(403).json({ error: 'POST meal without userid' });
+  }
+
+  if (!recipeid) {
+    return res.status(400).json({ error: 'Please enter id!' });
+  }
+
+  try {
+    // Check if recipeid exists in RECIPE table
+    const checkQuery = 'SELECT * FROM RECIPE WHERE recipeid = $1';
+    const checkResult = await pgConnection.query(checkQuery, [recipeid]);
+    if (checkResult.rowCount == 0) {
+      return res.status(404).json({ error: 'Enter a valid ID!' });
+    }
+
+    /*
+    * Attempt the meal log using the entered recipeid
+    */
+    const query = 'INSERT INTO MEALLOG VALUES($1, $2, NOW(), CURRENT_DATE)';
+    await pgConnection.query(query, [recipeid, req.session.userid]);
+    return res.status(200).json({ success: true });
+
+  } catch (e) {
+    console.log(e);
+  }
+});
+
 
 /*
  * login endpoint, takes in a username and password and returns success for a login that exists in the db
