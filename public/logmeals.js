@@ -1,95 +1,114 @@
-/*
-* For loading user meals on page load
-*/
-async function loadRecipes() {
-    console.log('called loadmeals');
-    const response = await fetch('/api/recipes');
-    const meals = await response.json();
-
-    const mealsContainer = document.getElementById('meals_container');
-
-    /*
-     * For each meal in the response create meal row and append
-     */
-    for (const meal of meals) {
-        console.log(meal)
-        const mealRow = document.createElement('div');
-        mealRow.className = 'meal_row';
-        const pkCell = document.createElement('p');
-        pkCell.className = 'recipe_id';
-        pkCell.textContent = `🏷️ ${meal.recipeid}`;
-        mealRow.appendChild(pkCell);
-
-        const nameCell = document.createElement('p');
-        nameCell.className = 'recipe_name';
-        nameCell.textContent = `🍽️ ${meal.recipename}`;
-        mealRow.appendChild(nameCell);
-
-        const caloriesCell = document.createElement('p');
-        caloriesCell.className = 'calories';
-        caloriesCell.textContent = `🔥 ${meal.totalcalories}`;
-        mealRow.appendChild(caloriesCell);
-
-        const proteinCell = document.createElement('p');
-        proteinCell.className = 'protein';
-        proteinCell.textContent = `🥩 ${meal.totalprotein}`;
-        mealRow.appendChild(proteinCell);
-
-        const carbsCell = document.createElement('p');
-        carbsCell.className = 'carbs';
-        carbsCell.textContent = `🍞 ${meal.totalcarbs}`;
-        mealRow.appendChild(carbsCell);
-
-        const fatsCell = document.createElement('p');
-        fatsCell.className = 'fats';
-        fatsCell.textContent = `🧈 ${meal.totalfat}`;
-        mealRow.appendChild(fatsCell);
-
-        mealsContainer.appendChild(mealRow);
+// Check Authorization
+async function isLoggedIn() {
+    const response = await fetch('api/fullname');
+    if (response.status === 403) {
+    window.location.href = '/error.html';
     }
 }
 
-/*
- * Script for add meal button to hit /api/logmeal endpoint and log a new meal for a given user
- * and Favorite button to hit /api/favorite
- */
-window.onload = () => {
-    // Log button
-    document.getElementById('log_meal_button').onclick = async function () {
-        const recipe_id_entered = id_entry.value;
+// load all meals and favorite meals
+async function loadRecipes() {
+    const [mealsRes, favsRes] = await Promise.all([
+        fetch('/api/recipes'),
+        fetch('/api/favorite')
+    ]);
+    if (!mealsRes.ok || !favsRes.ok) {
+        console.error('Failed to fetch meals or favorites');
+        return;
+    }
+    const meals = await mealsRes.json();
+    const favIds = await favsRes.json();
 
-        const response = await fetch('/api/logmeal', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ recipeid: recipe_id_entered }),
+    // containers
+    const favSection = document.getElementById('favorites_container');
+    const allSection = document.getElementById('meals_container');
+    // clear everything except the header row
+    favSection.querySelectorAll('div.meal_row:not(:first-child), hr')
+        .forEach(el => el.remove());
+    allSection.querySelectorAll('div.meal_row:not(:first-child), hr')
+        .forEach(el => el.remove());
+
+    for (const m of meals) {
+        const container = favIds.includes(m.recipeid)
+            ? favSection
+            : allSection;
+
+        const row = document.createElement('div');
+        row.className = 'meal_row';
+        [
+            ['recipe_id', '🏷️', m.recipeid],
+            ['recipe_name', '🍽️', m.recipename],
+            ['calories', '🔥', m.totalcalories],
+            ['protein', '🥩', m.totalprotein],
+            ['carbs', '🍞', m.totalcarbs],
+            ['fats', '🧈', m.totalfat]
+        ].forEach(([cls, icon, val]) => {
+            const p = document.createElement('p');
+            p.className = cls;
+            p.textContent = `${icon} ${val}`;
+            row.appendChild(p);
         });
-        const responseBody = await response.json();
 
-        if (responseBody.success) {
+        container.appendChild(row);
+        const hr = document.createElement('hr');
+        hr.className = 'header_border';
+        container.appendChild(hr);
+    }
+}
+
+window.onload = () => {
+    isLoggedIn();
+
+    const logBtn = document.getElementById('log_meal_button');
+    const favBtn = document.getElementById('favorite_meal_button');
+    const idIn = document.getElementById('id_entry');
+    const err = document.getElementById('error_label');
+
+    // Log button
+    logBtn.onclick = async () => {
+        const recipeid = idIn.value.trim();
+        const resp = await fetch('/api/logmeal', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({recipeid})
+        });
+        const body = await resp.json();
+        if (body.success) {
             location.href = '/meals';
         } else {
-            document.getElementById('error_label').textContent = responseBody.error;
+            err.textContent = body.error || 'Failed to log';
         }
     };
 
-    // Favorite button
-    document.getElementById('favorite_meal_button').onclick = async function () {
-        const recipe_id_entered = id_entry.value;
+    // Favorite/unfavorite toggle
+    favBtn.onclick = async () => {
+        const recipeid = idIn.value.trim();
+        if (!recipeid) {
+            err.textContent = 'Enter an ID to (un)favorite';
+            return;
+        }
+        err.textContent = '';
 
-        const response = await fetch('/api/favorite', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ recipeid: recipe_id_entered }),
+        // fetch current favorites
+        const favsRes = await fetch('/api/favorite');
+        const favIds = favsRes.ok ? await favsRes.json() : [];
+
+        // decide method
+        const method = favIds.includes(Number(recipeid)) ? 'DELETE' : 'POST';
+        const resp = await fetch('/api/favorite', {
+            method,
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({recipeid})
         });
-        const responseBody = await response.json();
-
-        if (responseBody.success) {
-            loadRecipes(); // refresh the lists here
-        } else {
-            document.getElementById('error_label').textContent = responseBody.error;
+        const body = await resp.json();
+        if (!body.success) {
+            err.textContent = body.error || 'Failed to update favorite';
+            return;
         }
+        // redraw sections
+        loadRecipes();
     };
 
-    // initial load
+    // initial render
     loadRecipes();
 };

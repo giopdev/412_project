@@ -36,7 +36,7 @@ async function loadMeals() {
             dateH2.textContent = dateOnly;
             container.appendChild(dateH2);
 
-            // column‐label row
+            // column-label row
             const headerRow = document.createElement('div');
             headerRow.className = 'meal_row';
             [
