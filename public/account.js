@@ -8,7 +8,7 @@ async function loadWelcome() {
     }
 
     // i dont know
-    const name = response.statusText;
+    const name = await response.json();
     document.getElementById('welcomeMsg').innerHTML = "Welcome, " + name + "!";
 }
 
