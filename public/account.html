@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>🍩 Account</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
     <style>
         body {
             background-color: #f3ffff;
@@ -63,6 +64,14 @@
             margin-bottom: 0;
         }
 
+        h3 {
+            font-weight: bold;
+            font-size: 4vh;
+            color: #677772;
+            margin-top: 0;
+            margin-bottom: .3em;
+        }
+
         p {
             font-size: 36px;
             font-weight: bold;
@@ -107,6 +116,79 @@
             max-width: 50%;
             background-color: #c2dddd;
         }
+
+        .goals-outer-container {
+            border: 4px solid rgb(101, 101, 101);
+            width: 75%;
+            border-radius: 15px;
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .goals-container {
+            border: 4px solid rgb(168, 168, 168);
+            border-radius: 15px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            box-sizing: border-box;
+            padding: 10px;
+            column-gap: 10px;
+            place-items: center;
+        }
+
+
+        .divider {
+            grid-column: 1 / 4;
+            width: 100%;
+            border: none;
+            border-top: 2px dashed rgb(168, 168, 168);;
+        }
+        .progress-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+            height: 50%;
+            border: 1px solid #ccc;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            transition: width 1s ease;
+        }
+
+        .goal-progress-label {
+            font-size: 1em;
+            margin-left: 0.5em;
+        }
+
+        #calories-bar {
+            background-color: #ff5733;            
+        }
+
+        #protein-bar {
+            background-color: #b22222;            
+        }
+
+        #carbs-bar {
+            background-color: #e2b07a;            
+        }
+
+        #fat-bar {
+            background-color: #ffe066;            
+        }
+
     </style>
 </head>
 
@@ -126,6 +208,48 @@
             <button type="button" onclick="window.location.href='/meals'">
                 View My Meals
             </button>
+        </div>
+        <div class="goals-outer-container">
+            <h3>Today's Progress</h3>
+            <div id="goals-container" class="goals-container">
+                <p class="fancy-label calories">🔥 Calories</p>
+                <div class="progress-container">
+                    <div class="progress-bar-container">
+                        <div id="calories-bar" class="progress-bar"></div>
+                    </div>
+                </div>
+                <p id="calories-count" class="goal-progress-label"></p>
+
+                <hr class="divider">
+                
+                <p class="fancy-label protein">🥩 Protein</p>
+                <div class="progress-container">
+                    <div class="progress-bar-container">
+                        <div id="protein-bar" class="progress-bar"></div>
+                    </div>
+                </div>
+                <p id="protein-count" class="goal-progress-label"></p>
+                
+                <hr class="divider">
+                
+                <p class="fancy-label carbs">🍞 Carbs</p>
+                <div class="progress-container">
+                    <div class="progress-bar-container">
+                        <div id="carbs-bar" class="progress-bar"></div>
+                    </div>
+                </div>
+                <p id="carbs-count" class="goal-progress-label"></p>
+                
+                <hr class="divider">
+                
+                <p class="fancy-label fats">🧈 Fats</p>
+                <div class="progress-container">
+                    <div class="progress-bar-container">
+                        <div id="fat-bar" class="progress-bar"></div>
+                    </div>
+                </div>
+                <p id="fat-count" class="goal-progress-label"></p>
+            </div>
         </div>
         <div class="button_row">
             <button id="logout_button" type="button">

@@ -12,6 +12,34 @@ async function loadWelcome() {
     document.getElementById('welcomeMsg').innerHTML = "Welcome, " + name + "!";
 }
 
+
+async function loadGoals() {
+    console.log("LOADING COALS\n")
+    const goals = await fetch('/api/goals').then(response => response.json());
+
+    console.log("GOALS", goals);
+
+    if (Object.keys(goals).length === 0) {
+        document.getElementById('goals-container').innerHTML = '<p>No goals set! Set an eating goal';
+        return;
+    }
+
+    const todaysTotals = await fetch('/api/todays-totals').then(response => response.json())
+
+    document.getElementById('calories-bar').style.width = `${100 * todaysTotals.calories / goals.calories}%`;
+    document.getElementById('calories-count').innerHTML = `${todaysTotals.calories}/${goals.calories}`;
+    
+    document.getElementById('protein-bar').style.width = `${100 * todaysTotals.protein / goals.protein}%`;
+    document.getElementById('protein-count').innerHTML = `${todaysTotals.protein}/${goals.protein}`;
+    
+    document.getElementById('carbs-bar').style.width = `${100 * todaysTotals.carbs / goals.carbs}%`;
+    document.getElementById('carbs-count').innerHTML = `${todaysTotals.carbs}/${goals.carbs}`;
+    
+    document.getElementById('fat-bar').style.width = `${100 * todaysTotals.fat / goals.fat}%`;
+    document.getElementById('fat-count').innerHTML = `${todaysTotals.fat}/${goals.fat}`;
+}
+
+
 // pull pfp image *(does not work yet)
 fetch('/api/profile-photo-bytes')
     .then(response => {
@@ -51,4 +79,5 @@ document.getElementById('logout_button').onclick = async function() {
 
 window.onload = () => {
     loadWelcome();
+    loadGoals();
 }

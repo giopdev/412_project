@@ -390,3 +390,45 @@ main()
 
 
 
+app.get('/api/todays-totals', async (req, res) => {
+  const userid = req.session.userid;
+  if (!req.session.userid) return res.status(401).json({ error: "Not logged in" });
+  
+  try {
+    const result = await pgConnection.query(
+      'SELECT SUM(totalcalories) AS calories, SUM(totalprotein) AS protein, SUM(totalcarbs) AS carbs, SUM(totalfat) AS fat FROM meallog NATURAL JOIN recipe WHERE userId = $1 AND loggedDate::date = CURRENT_DATE;',
+      [userid]
+    );
+
+    const totals = result.rows[0];
+    
+    for (const key in totals) {
+      if (totals[key] === null) {
+        totals[key] = 0;
+      }
+    }
+
+    res.json(totals);
+  } catch (err) {
+    console.error('Error fetching today\'s totals:', err);
+    res.status(500).end();
+  }
+});
+
+
+app.get('/api/goals', async (req, res) => {
+  const userid = req.session.userid;
+  if (!req.session.userid) return res.status(401).json({ error: "Not logged in" });
+  
+  try {
+    const result = await pgConnection.query(
+      'SELECT * FROM goal WHERE userid = $1',
+      [userid]
+    );
+    
+    res.json(result.rows[0] || {});
+  } catch (err) {
+    console.error('Error fetching goals:', err);
+    res.status(500).end();
+  }
+});
