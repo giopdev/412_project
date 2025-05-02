@@ -110,7 +110,7 @@ app.get('/api/fullname', async (req, res) => {
     SELECT fullname FROM "USER" WHERE userId=$1`;
 
     const queryResult = await pgConnection.query(query, [req.session.userid]);
-    return res.json(queryResult.rows[0].fullName);
+    return res.json(queryResult.rows[0].fullname);
   } catch (e) {
     console.log(e);
   }

@@ -32,23 +32,23 @@ fetch('/api/profile-photo-bytes')
         console.log(error);
         console.log('Using default profile image');
     }
-);
+    );
 
 // logout button event handler
 document.getElementById('logout_button').onclick = async function() {
     try {
-      const response = await fetch('/api/logout', { method: 'POST' });
-      if (response.ok) {
-        window.location.href = '/landingPage.html';
-      } else {
-        alert('Logout failed. Please try again.');
-      }
+        const response = await fetch('/api/logout', { method: 'POST' });
+        if (response.ok) {
+            window.location.href = '/landingPage.html';
+        } else {
+            alert('Logout failed. Please try again.');
+        }
     } catch (err) {
-      alert('Logout failed. Please try again.');
+        alert('Logout failed. Please try again.');
     }
-  };
+};
 
 
-  window.onload = () => {
+window.onload = () => {
     loadWelcome();
-  }
+}
