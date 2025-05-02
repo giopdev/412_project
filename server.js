@@ -23,7 +23,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(express.json());
 
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 
 // Session Object params
 app.use(session({
@@ -58,6 +58,36 @@ app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
+
+// Meals Page Path
+app.get('/meals', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'meals.html'));
+});
+
+// GET request for current session user's meallog in db
+app.get('/api/meallog', async (req, res) => {
+  // Return error if no userid in session
+  if (!req.session.userid) {
+    return res.status(403).json({ error: 'GET log without userid' });
+  }
+
+  try {
+    /*
+    * Send back session user's meal log
+    */
+    const query = `
+    SELECT
+    recipename, totalcalories, totalprotein, totalcarbs, totalfat, servingsize
+    FROM(select * from recipe r
+    join meallog ml on ml.recipeid = r.recipeid)
+    WHERE userid = $1`;
+
+    const queryResult = await pgConnection.query(query, [req.session.userid]);
+    return res.json(queryResult.rows);
+  } catch (e) {
+    console.log(e);
+  }
+});
 
 /*
  * login endpoint, takes in a username and password and returns success for a login that exists in the db
