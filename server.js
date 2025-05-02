@@ -81,17 +81,18 @@ app.get('/api/meallog', async (req, res) => {
     * Send back session user's meal log
     */
     const query = `
-    SELECT
-    recipename, totalcalories, totalprotein, totalcarbs, totalfat, servingsize
-    FROM(select * from recipe r
-    join meallog ml on ml.recipeid = r.recipeid)
-    WHERE userid = $1`;
+    SELECT r.recipename, r.totalcalories, r.totalprotein, r.totalcarbs, r.totalfat, r.servingsize, ml.loggedtime, ml.loggeddate::date AS datesaved
+    FROM meallog ml JOIN recipe r
+    ON r.recipeid = ml.recipeid
+    WHERE ml.userId = $1
+    ORDER BY ml.loggedtime DESC`;
 
-    const queryResult = await pgConnection.query(query, [req.session.userid]);
-    return res.json(queryResult.rows);
-  } catch (e) {
-    console.log(e);
-  }
+    const result = await pgConnection.query(query, [req.session.userid]);
+    return res.json(result.rows);
+    } catch (e) {
+        console.error(e);
+        return res.status(500).json({ error: 'Internal server error.' });
+    }
 });
 
 // GET request for all recipes in db
@@ -114,6 +115,52 @@ app.get('/api/recipes', async (req, res) => {
     console.log(e);
   }
 });
+
+// GET the list of recipeids the current user has favorited
+app.get('/api/favorite', async (req, res) => {
+    const userid = req.session.userid;
+    if (!userid) {
+        return res.status(401).json({error: 'Not logged in.'});
+    }
+    try {
+        const result = await pgConnection.query(
+            `SELECT recipeid
+         FROM favorites
+        WHERE userid = $1
+     ORDER BY datesaved DESC`,
+            [userid]
+        );
+        res.json(result.rows.map(r => r.recipeid));
+    } catch (err) {
+        console.error('Fetch favorites error:', err);
+        res.status(500).json({ error: 'Internal server error.' });
+    }
+});
+
+// DELETE a favorite (unfavorite)
+app.delete('/api/favorite', async (req, res) => {
+    const userid = req.session.userid;
+    if (!userid) {
+        return res.status(401).json({error: 'Not logged in.'});
+    }
+    const {recipeid} = req.body;
+    if (!recipeid) {
+        return res.status(400).json({error: 'No recipeid provided.'});
+    }
+    try {
+        await pgConnection.query(
+            `DELETE FROM favorites
+         WHERE userid = $1
+           AND recipeid = $2`,
+            [userid, recipeid]
+        );
+        res.json({ success: true });
+    } catch (err) {
+        console.error('Unfavorite error:', err);
+        res.status(500).json({ error: 'Internal server error.' });
+    }
+});
+
 
 /*
  * logmeal endpoint, takes in a recipeid and logs it in the session user's meallog
@@ -148,6 +195,44 @@ app.post('/api/logmeal', async (req, res) => {
     console.log(e);
   }
 });
+
+/*
+ * favorite endpoint, takes in a userid, recipeid, and date saved based on machine
+ */
+app.post('/api/favorite', async (req, res) => {
+    // must be logged in
+    const userid = req.session.userid;
+    if (!userid) {
+        return res.status(401).json({error: 'POST meal without userid'});
+    }
+
+    // recipeid from body
+    const { recipeid } = req.body;
+    if (!recipeid) {
+        return res.status(400).json({error: 'Please enter id!'});
+    }
+
+    try {
+        // Check if recipeid exists in RECIPE table
+        const checkQuery = 'SELECT * FROM RECIPE WHERE recipeid = $1';
+        const checkResult = await pgConnection.query(checkQuery, [recipeid]);
+        if (checkResult.rowCount == 0) {
+            return res.status(404).json({ error: 'Enter a valid ID!' });
+        }
+
+        // insert into favorites
+        await pgConnection.query(
+            `INSERT INTO favorites (userid, recipeid, datesaved) VALUES ($1, $2, CURRENT_DATE)
+            ON CONFLICT DO NOTHING`, // in case click twice
+            [userid, recipeid]
+        );
+        return res.json({success: true});
+    } catch (err) {
+        console.error('Favorite error:', err);
+        return res.status(500).json({error: 'Internal server error.'});
+    }
+});
+
 
 
 /*

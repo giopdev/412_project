@@ -1,55 +1,79 @@
-/*
-* For loading user meals on page load
-*/
 async function loadMeals() {
-  console.log('called loadmeals');
-  const response = await fetch('/api/meallog');
-  const meals = await response.json();
+    // fetch the logged‐meals
+    const resp = await fetch('/api/meallog');
+    if (!resp.ok) {
+        console.error('Failed to fetch meallog');
+        return;
+    }
+    const meals = await resp.json();
 
-  const mealsContainer = document.getElementById('meals_container');
+    // lear out the container
+    const container = document.getElementById('meals_container');
+    container.innerHTML = '';
 
-  /*
-   * For each meal in the response, create a meal row and append to the container
-   */
-  for (const meal of meals) {
-    const mealRow = document.createElement('div');
-    mealRow.className = 'meal_row';
-    /*
-     * Create paragraphs for each element of a recipe and add it to the row
-     */
-    const nameCell = document.createElement('p');
-    nameCell.className = 'recipe_name';
-    nameCell.textContent = `🍽️ ${meal.recipename}`;
-    mealRow.appendChild(nameCell);
+    let lastDate = null;
 
-    const caloriesCell = document.createElement('p');
-    caloriesCell.className = 'calories';
-    caloriesCell.textContent = `🔥 ${meal.totalcalories}`;
-    mealRow.appendChild(caloriesCell);
+    for (const meal of meals) {
+        // normalize to YYYY-MM-DD
+        const dateOnly = typeof meal.datesaved === 'string'
+            ? meal.datesaved.split('T')[0]
+            : new Date(meal.datesaved).toISOString().split('T')[0];
 
-    const proteinCell = document.createElement('p');
-    proteinCell.className = 'protein';
-    proteinCell.textContent = `🥩 ${meal.totalprotein}`;
-    mealRow.appendChild(proteinCell);
+        //when the date changes, insert a header + column labels
+        if (dateOnly !== lastDate) {
+            lastDate = dateOnly;
 
-    const carbsCell = document.createElement('p');
-    carbsCell.className = 'carbs';
-    carbsCell.textContent = `🍞 ${meal.totalcarbs}`;
-    mealRow.appendChild(carbsCell);
+            // date header
+            const dateH2 = document.createElement('h2');
+            dateH2.textContent = dateOnly;
+            container.appendChild(dateH2);
 
-    const fatsCell = document.createElement('p');
-    fatsCell.className = 'fats';
-    fatsCell.textContent = `🧈 ${meal.totalfat}`;
-    mealRow.appendChild(fatsCell);
+            // column‐label row
+            const headerRow = document.createElement('div');
+            headerRow.className = 'meal_row';
+            [
+                ['recipe_name', '🍽️ Recipe Name'],
+                ['calories', '🔥 Calories'],
+                ['protein', '🥩 Protein'],
+                ['carbs', '🍞 Carbs'],
+                ['fats', '🧈 Fats']
+            ].forEach(([cls, text]) => {
+                const p = document.createElement('p');
+                p.className = cls;
+                p.textContent = text;
+                headerRow.appendChild(p);
+            });
+            container.appendChild(headerRow);
 
-    mealsContainer.appendChild(mealRow);
-  }
+            // separator
+            const hr = document.createElement('hr');
+            hr.className = 'header_border';
+            container.appendChild(hr);
+        }
+
+        // render the actual meal row
+        const row = document.createElement('div');
+        row.className = 'meal_row';
+        [
+            ['recipe_name', meal.recipename],
+            ['calories', meal.totalcalories],
+            ['protein', meal.totalprotein],
+            ['carbs', meal.totalcarbs],
+            ['fats', meal.totalfat]
+        ].forEach(([cls, val]) => {
+            const p = document.createElement('p');
+            p.className = cls;
+            p.textContent = val;
+            row.appendChild(p);
+        });
+        container.appendChild(row);
+
+        // and a final separator
+        const hr2 = document.createElement('hr');
+        hr2.className = 'header_border';
+        container.appendChild(hr2);
+    }
 }
 
-/*
- * Script for add meal button to hit /meal_log endpoint and log a new meal for a given user
- */
-window.onload = () => {
-  loadMeals();
-
-}
+// make sure to call it on load
+window.onload = loadMeals;
