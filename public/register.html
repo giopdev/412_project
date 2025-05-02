@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="UTF-8">
-	<title>F🍩🍩D! - Register</title>
+	<title>🍩 Register</title>
 </head>
 <style>
 	body {
@@ -80,37 +80,37 @@
 	<div class="button_list">
 		<button type="button" id="doRegister">Create It!</button>
 	</div>
-	
+
 	<script>
 		document.getElementById('doRegister').addEventListener('click', async () => {
-		const fullName = document.getElementById('register_fullname').value.trim();
-		const email = document.getElementById('register_email').value.trim();
-		const username = document.getElementById('register_username').value.trim();
-		const password = document.getElementById('register_password').value;
-		
-		if(!fullName || !email || !username || !password) {
-			return alert('ALL FIELDS REQUIRED!');
-		}
-		
-		try {
-			const res = await fetch('/register', {
-				method: 'POST',
-				headers: {'Content-Type': 'application/json'},
-				body: JSON.stringify({register_fullname: fullName, register_email: email, register_username: username, register_password: password}),
-			});
-			
-			if(res.ok){
-				alert('Registered! Going back to homepage');
-				window.location = '/';
-			} else {
-				const {error} = await res.json();
-				alert (error || 'Registration failed');
+			const fullName = document.getElementById('register_fullname').value.trim();
+			const email = document.getElementById('register_email').value.trim();
+			const username = document.getElementById('register_username').value.trim();
+			const password = document.getElementById('register_password').value;
+
+			if (!fullName || !email || !username || !password) {
+				return alert('ALL FIELDS REQUIRED!');
 			}
-		} catch (err) {
-			console.error(err);
-			alert('Network error');
-		}
-	});
+
+			try {
+				const res = await fetch('/register', {
+					method: 'POST',
+					headers: {'Content-Type': 'application/json'},
+					body: JSON.stringify({register_fullname: fullName, register_email: email, register_username: username, register_password: password}),
+				});
+
+				if (res.ok) {
+					alert('Registered! Going back to homepage');
+					window.location = '/';
+				} else {
+					const {error} = await res.json();
+					alert(error || 'Registration failed');
+				}
+			} catch (err) {
+				console.error(err);
+				alert('Network error');
+			}
+		});
 	</script>
 </body>
 

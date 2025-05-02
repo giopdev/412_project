@@ -165,9 +165,7 @@
     </div>
 
     <div class="home_button_area">
-        <button type="button"
-                onclick="window.location.href='/meals'"
-                class="home_button_styling">
+        <button type="button" onclick="window.location.href='/account'" class="home_button_styling">
             ⏎
         </button>
     </div>
@@ -274,8 +272,8 @@
                 const recipeid = idIn.value.trim();
                 const resp = await fetch('/api/logmeal', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ recipeid })
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({recipeid})
                 });
                 const body = await resp.json();
                 if (body.success) {
@@ -302,8 +300,8 @@
                 const method = favIds.includes(Number(recipeid)) ? 'DELETE' : 'POST';
                 const resp = await fetch('/api/favorite', {
                     method,
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ recipeid })
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({recipeid})
                 });
                 const body = await resp.json();
                 if (!body.success) {
@@ -319,4 +317,5 @@
         };
     </script>
 </body>
+
 </html>
