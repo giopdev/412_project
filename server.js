@@ -21,9 +21,8 @@ const PORT = 3000;
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(express.json());
-
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '20mb' }));
+app.use(express.urlencoded({ extended: true, limit: '20mb' }));
 
 // Session Object params
 app.use(session({
@@ -89,10 +88,10 @@ app.get('/api/meallog', async (req, res) => {
 
     const result = await pgConnection.query(query, [req.session.userid]);
     return res.json(result.rows);
-    } catch (e) {
-        console.error(e);
-        return res.status(500).json({ error: 'Internal server error.' });
-    }
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ error: 'Internal server error.' });
+  }
 });
 
 // GET full name
@@ -139,23 +138,23 @@ app.get('/api/recipes', async (req, res) => {
 
 // GET the list of recipeids the current user has favorited
 app.get('/api/favorite', async (req, res) => {
-    const userid = req.session.userid;
-    if (!userid) {
-        return res.status(401).json({error: 'Not logged in.'});
-    }
-    try {
-        const result = await pgConnection.query(
-            `SELECT recipeid
+  const userid = req.session.userid;
+  if (!userid) {
+    return res.status(401).json({ error: 'Not logged in.' });
+  }
+  try {
+    const result = await pgConnection.query(
+      `SELECT recipeid
          FROM favorites
         WHERE userid = $1
      ORDER BY datesaved DESC`,
-            [userid]
-        );
-        res.json(result.rows.map(r => r.recipeid));
-    } catch (err) {
-        console.error('Fetch favorites error:', err);
-        res.status(500).json({ error: 'Internal server error.' });
-    }
+      [userid]
+    );
+    res.json(result.rows.map(r => r.recipeid));
+  } catch (err) {
+    console.error('Fetch favorites error:', err);
+    res.status(500).json({ error: 'Internal server error.' });
+  }
 });
 
 // Clear session cookie --> logout
@@ -172,26 +171,26 @@ app.post('/api/logout', (req, res) => {
 
 // DELETE a favorite (unfavorite)
 app.delete('/api/favorite', async (req, res) => {
-    const userid = req.session.userid;
-    if (!userid) {
-        return res.status(401).json({error: 'Not logged in.'});
-    }
-    const {recipeid} = req.body;
-    if (!recipeid) {
-        return res.status(400).json({error: 'No recipeid provided.'});
-    }
-    try {
-        await pgConnection.query(
-            `DELETE FROM favorites
+  const userid = req.session.userid;
+  if (!userid) {
+    return res.status(401).json({ error: 'Not logged in.' });
+  }
+  const { recipeid } = req.body;
+  if (!recipeid) {
+    return res.status(400).json({ error: 'No recipeid provided.' });
+  }
+  try {
+    await pgConnection.query(
+      `DELETE FROM favorites
          WHERE userid = $1
            AND recipeid = $2`,
-            [userid, recipeid]
-        );
-        res.json({ success: true });
-    } catch (err) {
-        console.error('Unfavorite error:', err);
-        res.status(500).json({ error: 'Internal server error.' });
-    }
+      [userid, recipeid]
+    );
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Unfavorite error:', err);
+    res.status(500).json({ error: 'Internal server error.' });
+  }
 });
 
 
@@ -233,37 +232,37 @@ app.post('/api/logmeal', async (req, res) => {
  * favorite endpoint, takes in a userid, recipeid, and date saved based on machine
  */
 app.post('/api/favorite', async (req, res) => {
-    // must be logged in
-    const userid = req.session.userid;
-    if (!userid) {
-        return res.status(401).json({error: 'POST meal without userid'});
+  // must be logged in
+  const userid = req.session.userid;
+  if (!userid) {
+    return res.status(401).json({ error: 'POST meal without userid' });
+  }
+
+  // recipeid from body
+  const { recipeid } = req.body;
+  if (!recipeid) {
+    return res.status(400).json({ error: 'Please enter id!' });
+  }
+
+  try {
+    // Check if recipeid exists in RECIPE table
+    const checkQuery = 'SELECT * FROM RECIPE WHERE recipeid = $1';
+    const checkResult = await pgConnection.query(checkQuery, [recipeid]);
+    if (checkResult.rowCount == 0) {
+      return res.status(404).json({ error: 'Enter a valid ID!' });
     }
 
-    // recipeid from body
-    const { recipeid } = req.body;
-    if (!recipeid) {
-        return res.status(400).json({error: 'Please enter id!'});
-    }
-
-    try {
-        // Check if recipeid exists in RECIPE table
-        const checkQuery = 'SELECT * FROM RECIPE WHERE recipeid = $1';
-        const checkResult = await pgConnection.query(checkQuery, [recipeid]);
-        if (checkResult.rowCount == 0) {
-            return res.status(404).json({ error: 'Enter a valid ID!' });
-        }
-
-        // insert into favorites
-        await pgConnection.query(
-            `INSERT INTO favorites (userid, recipeid, datesaved) VALUES ($1, $2, CURRENT_DATE)
+    // insert into favorites
+    await pgConnection.query(
+      `INSERT INTO favorites (userid, recipeid, datesaved) VALUES ($1, $2, CURRENT_DATE)
             ON CONFLICT DO NOTHING`, // in case click twice
-            [userid, recipeid]
-        );
-        return res.json({success: true});
-    } catch (err) {
-        console.error('Favorite error:', err);
-        return res.status(500).json({error: 'Internal server error.'});
-    }
+      [userid, recipeid]
+    );
+    return res.json({ success: true });
+  } catch (err) {
+    console.error('Favorite error:', err);
+    return res.status(500).json({ error: 'Internal server error.' });
+  }
 });
 
 /*
@@ -271,28 +270,28 @@ app.post('/api/favorite', async (req, res) => {
  */
 app.post('/api/profilephoto', async (req, res) => {
   console.log("HeI");
-  const {newPhoto} = req.body;
+  const { newPhoto } = req.body;
   const userid = req.session.userid;
   if (!userid) {
-    return res.status(401).json({error: 'POST profile picture without userid'});
+    return res.status(401).json({ error: 'POST profile picture without userid' });
   }
   if (!newPhoto) {
-    return res.status(400).json({error: 'Please enter photo'});
+    return res.status(400).json({ error: 'Please enter photo' });
   }
   try {
     const imageBuffer = Buffer.from(newPhoto, 'base64');
     // update user query
     await pgConnection.query(
-        `UPDATE "USER" SET profilephoto = $1 WHERE userid = $2`,
-        [imageBuffer, userid]
+      `UPDATE "USER" SET profilephoto = $1 WHERE userid = $2`,
+      [imageBuffer, userid]
     );
-    return res.json({success: true});
+    return res.json({ success: true });
   } catch (err) {
-      console.error('Profile picture error:', err);
-      return res.status(500).json({error: 'Internal server error.'});
+    console.error('Profile picture error:', err);
+    return res.status(500).json({ error: 'Internal server error.' });
   }
 
-}) 
+})
 
 
 
@@ -387,13 +386,13 @@ async function main() {
 app.get('/api/profile-photo-bytes', async (req, res) => {
   const userid = req.session.userid;
   if (!req.session.userid) return res.status(401).json({ error: "Not logged in" });
-  
+
   try {
     const result = await pgConnection.query(
       'SELECT profilePhoto FROM "USER" WHERE userid = $1',
       [userid]
     );
-    
+
     // convert byte array to png
     res.set('Content-Type', 'image/png');
     res.send(result.rows[0].profilephoto);
@@ -421,7 +420,7 @@ main()
 app.get('/api/todays-totals', async (req, res) => {
   const userid = req.session.userid;
   if (!req.session.userid) return res.status(401).json({ error: "Not logged in" });
-  
+
   try {
     const result = await pgConnection.query(
       'SELECT SUM(totalcalories) AS calories, SUM(totalprotein) AS protein, SUM(totalcarbs) AS carbs, SUM(totalfat) AS fat FROM meallog NATURAL JOIN recipe WHERE userId = $1 AND loggedDate::date = CURRENT_DATE;',
@@ -429,7 +428,7 @@ app.get('/api/todays-totals', async (req, res) => {
     );
 
     const totals = result.rows[0];
-    
+
     for (const key in totals) {
       if (totals[key] === null) {
         totals[key] = 0;
@@ -447,13 +446,13 @@ app.get('/api/todays-totals', async (req, res) => {
 app.get('/api/goals', async (req, res) => {
   const userid = req.session.userid;
   if (!req.session.userid) return res.status(401).json({ error: "Not logged in" });
-  
+
   try {
     const result = await pgConnection.query(
       'SELECT * FROM goal WHERE userid = $1',
       [userid]
     );
-    
+
     res.json(result.rows[0] || {});
   } catch (err) {
     console.error('Error fetching goals:', err);
