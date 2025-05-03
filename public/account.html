@@ -16,7 +16,7 @@
             left: 1vh;
 
             display: flex;
-            
+
         }
 
         #profile-picture {
@@ -28,20 +28,20 @@
         }
 
         .profile_styling {
-			padding: 10px 15px;
-			font-size: 2vh;
-			font-weight: bold;
-			border-radius: 2vh;
-			color: #6b6b6b;
+            padding: 10px 15px;
+            font-size: 2vh;
+            font-weight: bold;
+            border-radius: 2vh;
+            color: #6b6b6b;
 
-            
-		}
 
-		.profile_area {
-			position: absolute;
-			top: 1vh;
-			left: 1vh;
-		}
+        }
+
+        .profile_area {
+            position: absolute;
+            top: 1vh;
+            left: 1vh;
+        }
 
         #update_profile {
             margin: auto 20px;
@@ -166,8 +166,10 @@
             grid-column: 1 / 4;
             width: 100%;
             border: none;
-            border-top: 2px dashed rgb(168, 168, 168);;
+            border-top: 2px dashed rgb(168, 168, 168);
+            ;
         }
+
         .progress-container {
             width: 100%;
             height: 100%;
@@ -195,34 +197,33 @@
         }
 
         #calories-bar {
-            background-color: #ff5733;            
+            background-color: #ff5733;
         }
 
         #protein-bar {
-            background-color: #b22222;            
+            background-color: #b22222;
         }
 
         #carbs-bar {
-            background-color: #e2b07a;            
+            background-color: #e2b07a;
         }
 
         #fat-bar {
-            background-color: #ffe066;            
+            background-color: #ffe066;
         }
-
     </style>
 </head>
 
 <body>
     <header>
-        <img id="profile-picture" src="images/default.png" alt=""/>
+        <img id="profile-picture" src="images/default.png" alt="" />
         <div id="update_profile">
             <input type="file" id="newPhoto" name="filename" accept="image/png">
             <input type="submit" id="submitButton" value="Update Profile">
         </div>
     </header>
-    
-    
+
+
     <main>
         <!-- Show logged in view -->
         <div class="title_container">
@@ -249,7 +250,7 @@
                 <p id="calories-count" class="goal-progress-label"></p>
 
                 <hr class="divider">
-                
+
                 <p class="fancy-label protein">🥩 Protein</p>
                 <div class="progress-container">
                     <div class="progress-bar-container">
@@ -257,9 +258,9 @@
                     </div>
                 </div>
                 <p id="protein-count" class="goal-progress-label"></p>
-                
+
                 <hr class="divider">
-                
+
                 <p class="fancy-label carbs">🍞 Carbs</p>
                 <div class="progress-container">
                     <div class="progress-bar-container">
@@ -267,9 +268,9 @@
                     </div>
                 </div>
                 <p id="carbs-count" class="goal-progress-label"></p>
-                
+
                 <hr class="divider">
-                
+
                 <p class="fancy-label fats">🧈 Fats</p>
                 <div class="progress-container">
                     <div class="progress-bar-container">
@@ -291,8 +292,8 @@
 
     <!-- load the profile photo with script -->
     <script src="account.js"></script>
-    
-    
+
+
 </body>
 
 </html>

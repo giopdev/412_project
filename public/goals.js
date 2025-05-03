@@ -1,6 +1,10 @@
-
-
-
+// Check Authorization
+async function isLoggedIn() {
+    const response = await fetch('api/fullname');
+    if (response.status === 403) {
+        window.location.href = '/error.html';
+    }
+}
 
 async function loadGoals() {
     const goals = await fetch('/api/goals').then(response => response.json());
@@ -14,7 +18,7 @@ async function loadGoals() {
     document.getElementById('calories-goal').innerHTML = goals.calories;
     document.getElementById('protein-goal').innerHTML = goals.protein;
     document.getElementById('carbs-goal').innerHTML = goals.carbs;
-    document.getElementById('fat-goal').innerHTML = goals.fat;    
+    document.getElementById('fat-goal').innerHTML = goals.fat;
 }
 
 async function updateGoalsButton() {
@@ -25,9 +29,9 @@ async function updateGoalsButton() {
             const carbs = document.getElementById('carbs-goal').innerText;
             const fat = document.getElementById('fat-goal').innerText;
 
-            if (!Number.isInteger(Number(calories)) || !Number.isInteger(Number(protein)) || 
-                !Number.isInteger(Number(carbs)) || !Number.isInteger(Number(fat)) || 
-                Number(calories) < 0 || Number(protein) < 0 || 
+            if (!Number.isInteger(Number(calories)) || !Number.isInteger(Number(protein)) ||
+                !Number.isInteger(Number(carbs)) || !Number.isInteger(Number(fat)) ||
+                Number(calories) < 0 || Number(protein) < 0 ||
                 Number(carbs) < 0 || Number(fat) < 0) {
                 alert('Calories, protein, carbs, and fat must be non-negative integers.');
                 return;
@@ -62,6 +66,7 @@ async function updateGoalsButton() {
 }
 
 window.onload = () => {
+    isLoggedIn();
     updateGoalsButton();
     loadGoals();
 }
