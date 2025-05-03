@@ -86,10 +86,74 @@ document.getElementById('logout_button').onclick = async function() {
     }
 };
 
+// toggle update profile message
+document.getElementById('profile-picture').onclick = function() {
+  const element = document.getElementById('update_profile');
+  if (element.style.display === 'none') {
+    element.style.display = 'flex';
+  } else {
+    element.style.display = 'none';
+  }
+}
+
+document.getElementById('submitButton').onclick = async function() {
+  const fileInput = document.getElementById('newPhoto');
+  const file = fileInput.files[0];
+  if (!file) {
+    alert('Please select a photo first');
+    return;
+  }
+
+  try {
+    console.log("HI\n");
+    // read image file to bytes
+    const base64Data = await readFileAsBase64(file);
+    console.log("Base64:", base64Data.slice(0, 30));
+
+    // Send to server
+    const response = await fetch('/api/profilephoto', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ newPhoto: base64Data })
+    });
+
+    console.log('image');
+    console.log(response);
+    if (response.ok) {
+      console.log('Profile photo updated!');
+      location.reload();
+    } else {
+      // Show error if server failed
+      const error = await response.json();
+      alert('Profile update failed: ' + (error.error || 'Unknown error'));
+    }
+    
+    
+  } catch (err) {
+    console.log(err);
+    alert('Profile update failed.');
+  }
+}
+
+// Helper to read file as base64
+function readFileAsBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const base64Data = reader.result.split(',')[1];
+      resolve(base64Data);
+    };
+
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
 
 window.onload = () => {
     isLoggedIn();
     loadWelcome();
     loadGoals();
     loadPFP();
+    document.getElementById('update_profile').style.display = 'none';
 }

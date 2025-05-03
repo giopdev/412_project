@@ -266,6 +266,34 @@ app.post('/api/favorite', async (req, res) => {
     }
 });
 
+/*
+ * update profile image
+ */
+app.post('/api/profilephoto', async (req, res) => {
+  console.log("HeI");
+  const {newPhoto} = req.body;
+  const userid = req.session.userid;
+  if (!userid) {
+    return res.status(401).json({error: 'POST profile picture without userid'});
+  }
+  if (!newPhoto) {
+    return res.status(400).json({error: 'Please enter photo'});
+  }
+  try {
+    const imageBuffer = Buffer.from(newPhoto, 'base64');
+    // update user query
+    await pgConnection.query(
+        `UPDATE "USER" SET profilephoto = $1 WHERE userid = $2`,
+        [imageBuffer, userid]
+    );
+    return res.json({success: true});
+  } catch (err) {
+      console.error('Profile picture error:', err);
+      return res.status(500).json({error: 'Internal server error.'});
+  }
+
+}) 
+
 
 
 /*
