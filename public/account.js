@@ -21,10 +21,7 @@ async function loadWelcome() {
 
 
 async function loadGoals() {
-    console.log("LOADING COALS\n")
     const goals = await fetch('/api/goals').then(response => response.json());
-
-    console.log("GOALS", goals);
 
     if (Object.keys(goals).length === 0) {
         document.getElementById('goals-container').innerHTML = '<p>No goals set! Set an eating goal';

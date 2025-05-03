@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>🍩 Goals</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+	<style>
+		.home_button_styling {
+			padding: 10px 15px;
+			font-size: 2vh;
+			cursor: pointer;
+			font-weight: bold;
+			border-radius: 2vh;
+			color: #6b6b6b;
+		}
+
+		.home_button_area {
+			position: absolute;
+			top: 1vh;
+			left: 1vh;
+		}
+
+		body {
+			min-height: 50vh;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			margin: auto;
+			max-width: 100vh;
+			gap: 3vh;
+			background-color: #f3ffff;
+
+            height: 100vh;
+		}
+
+		h1 {
+			font-weight: bold;
+			font-style: italic;
+			font-size: 5vh;
+			color: #ffac33;
+			margin-top: 0;
+		}
+
+		h2 {
+			font-weight: bold;
+			font-size: 5vh;
+			color: #677772;
+			margin-top: 0;
+			margin-bottom: 0;
+		}
+
+		p {
+			font-size: 36px;
+			font-weight: bold;
+			font-style: italic;
+			color: #677772;
+			margin-top: 0;
+			margin-bottom: 0;
+		}
+
+		.title_container {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			max-width: 100vh;
+		}
+
+		
+		button {
+			padding: 10px 40px;
+			font-size: 24px;
+			cursor: pointer;
+			font-weight: bold;
+			border-radius: 2vh;
+			color: #6b6b6b;
+		}
+
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 3px solid #000;
+            padding: 0.5em;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f0f0f0;
+            
+        }
+
+        td {
+            word-wrap: break-word; 
+            word-break: break-word;
+            white-space: normal;
+        }
+
+        th p {
+            font-size: 3vh;
+        }
+
+        .goal-value {
+            font-size: 2.5vh;
+            font-weight: bold;
+        }
+
+        .spacer {
+            height: 10vh;
+        }
+
+	</style>
+</head>
+
+<body>
+    <div class="home_button_area">
+        <button type="button" onclick="window.location.href='/account'" class="home_button_styling">⏎</button>
+    </div>
+	<div class="title_container">
+		<h1>Your Goals 💪</h1>
+        <p style="font-size: 30px;">Click on the values to edit them</p>
+	</div>
+
+
+    <table>
+        <thead>
+            <tr>
+                <th><p>Goal Name</p></th>
+                <th><p>Goal Description</p></th>
+                <th><p class="fancy-label calories">🔥 Calories</p></th>
+                <th><p class="fancy-label protein">🥩 Protein</p></th>
+                <th><p class="fancy-label carbs">🍞 Carbs</p></th>
+                <th><p class="fancy-label fats">🧈 Fats</p></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td id="goal-name" contenteditable="true">*Awesome goal*</td>
+                <td id="goal-description" contenteditable="true">*Awesome description*</td>
+                <td id="calories-goal" contenteditable="true" class="goal-value">0</td>
+                <td id="protein-goal" contenteditable="true" class="goal-value">0</td>
+                <td id="carbs-goal" contenteditable="true" class="goal-value">0</td>
+                <td id="fat-goal" contenteditable="true" class="goal-value">0</td>
+            </tr>
+        </tbody>
+    </table>
+	<button id="update-goals-button">Update Goals</button>
+    <div class="spacer"></div>
+
+	<script src="goals.js"></script>
+
+</html>

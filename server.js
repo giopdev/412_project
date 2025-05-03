@@ -68,6 +68,10 @@ app.get('/logmeals', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'logmeals.html'));
 });
 
+app.get('/goals', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'goals.html'));
+});
+
 // GET request for current session user's meallog in db
 app.get('/api/meallog', async (req, res) => {
   // Return error if no userid in session
@@ -413,8 +417,6 @@ app.post('/api/logout', (req, res) => {
   });
 });
 
-main()
-
 
 
 app.get('/api/todays-totals', async (req, res) => {
@@ -459,3 +461,32 @@ app.get('/api/goals', async (req, res) => {
     res.status(500).end();
   }
 });
+
+app.post('/api/update-goals', async (req, res) => {
+  const goals = req.body;
+
+  // Return error if no userid in session
+  if (!req.session.userid) {
+    return res.status(403).json({ error: 'POST meal without userid' });
+  }
+
+  if (!goals) {
+    return res.status(400).json({ error: 'Please enter goals information!' });
+  }
+
+  try {
+    const deleteQuery = 'DELETE FROM goal WHERE userId=$1;';
+    await pgConnection.query(deleteQuery, [req.session.userid]);
+
+    const insertQuery = 'INSERT INTO goal VALUES($1, $2, $3, $4, $5, $6, $7, $8);';
+    await pgConnection.query(insertQuery, [req.session.userid, req.session.userid, goals.goalname, goals.goaldescription, goals.calories, goals.protein, goals.carbs, goals.fat]);
+    return res.status(200).json({ success: true });
+
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ error: 'Internal server error.' });
+  }
+});
+
+
+main()
